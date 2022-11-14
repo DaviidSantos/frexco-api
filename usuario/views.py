@@ -9,7 +9,12 @@ from .serializers import UsuarioSerializer
 
 @api_view(['GET'])
 def usuario_list(request):
-    usuarios = Usuario.objects.all()
+    query = request.GET.get('query')
+
+    if query == None:
+        query = ''
+
+    usuarios = Usuario.objects.filter(login__icontains = query)
     serializer = UsuarioSerializer(usuarios, many=True)
     return Response(serializer.data)
 
