@@ -20,5 +20,14 @@ class Usuario(models.Model):
     def gerarSenha():
         return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
+    def atualizarDados(usuario, request):
+        if request.data['login']:
+            usuario.login = request.data['login']
+        
+        if request.data['senha']:
+            usuario.login = request.data['senha']
+
+        return usuario
+
     def __str__(self):
         return self.login

@@ -33,8 +33,16 @@ def usuario_list(request):
 
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def usuario_detail(request, login):
     usuario = Usuario.objects.get(login=login)
-    serializer = UsuarioSerializer(usuario, many=False)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        serializer = UsuarioSerializer(usuario, many=False)
+        return Response(serializer.data)
+
+    if request.method == 'PUT':
+         usuario = Usuario.atualizarDados(usuario, request)
+         usuario.save()
+         serializer = UsuarioSerializer(usuario, many=False)
+         return Response(serializer.data)
+        
