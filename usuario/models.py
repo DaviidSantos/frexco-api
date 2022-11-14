@@ -12,7 +12,7 @@ class Usuario(models.Model):
     def verificarSenha(request):
         if not request.data['senha']:
             senha = Usuario.gerarSenha()
-        else:
+        elif request.data['senha']:
             senha = request.data['senha']
 
         return senha

@@ -1,9 +1,6 @@
-from django.shortcuts import render
-from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import random
 from .models import Usuario
 from .serializers import UsuarioSerializer
 
@@ -22,14 +19,23 @@ def usuario_list(request):
 
     #Controla o Método POST
     if request.method == 'POST':
-        usuario = Usuario.objects.create(
-            login = request.data['login'],
-            senha = Usuario.verificarSenha(request),
-            dataDeNascimento = request.data['dataDeNascimento']
-        )
+        #Verifica se a senha foi informada, caso contrário retornará um senha aleatório de 8 dígitos
+        senha = Usuario.verificarSenha(request)
 
-        serializer = UsuarioSerializer(usuario, many=False)
-        return Response(serializer.data)
+        #Verifica se a senha tem pelo menos 4 caracteres, caso não tenha será exibido uma mensagem pedindo pra informar uma senha do tamanho necessário
+        if len(senha) < 4:
+            return Response('Informe uma senha com pelo menos 4 caracteres')
+
+        #Caso tenha pelo menos 4 caracteres o usuário será criado
+        else:
+            usuario = Usuario.objects.create(
+                login = request.data['login'],
+                senha = senha,
+                dataDeNascimento = request.data['dataDeNascimento']
+            )
+
+            serializer = UsuarioSerializer(usuario, many=False)
+            return Response(serializer.data)
 
 
 
