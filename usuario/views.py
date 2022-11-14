@@ -4,20 +4,14 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .models import Usuario
+from .serializers import UsuarioSerializer
 
+@api_view(['GET'])
 def usuario_list(request):
-    data = [{
-        'login': 'odavidsantos',
-        'senha': 'd#663848',
-        'dataDeNascimento': '18/06/2001'
-        },
-        {
-        'login': 'dwvidpriv',
-        'senha': 'd#663848',
-        'dataDeNascimento': '18/06/2001'
-        }
-    ]
-    return JsonResponse(data, safe=False)
+    usuarios = Usuario.objects.all()
+    serializer = UsuarioSerializer(usuarios, many=True)
+    return Response(serializer.data)
 
 def usuario_detail(request, login):
     data = login
