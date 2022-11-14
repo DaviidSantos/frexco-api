@@ -1,14 +1,24 @@
 from django.db import models
 import uuid
+import random
+import string
 
 class Usuario(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    login = models.CharField(max_length=200)
-    senha = models.CharField(max_length=8)
+    login = models.CharField(max_length=200, unique=True)
+    senha = models.CharField(max_length=8, null=True, blank=True)
     dataDeNascimento = models.DateField()
 
-    def gerarSenhaAleatoria(usuario):
-        senha = Usuario.objects.make_random_password(length=8)
+    def verificarSenha(request):
+        if not request.data['senha']:
+            senha = Usuario.gerarSenha()
+        else:
+            senha = request.data['senha']
+
+        return senha
+
+    def gerarSenha():
+        return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
     def __str__(self):
         return self.login
