@@ -46,3 +46,6 @@ def usuario_detail(request, login):
          serializer = UsuarioSerializer(usuario, many=False)
          return Response(serializer.data)
         
+    if request.method == 'DELETE':
+        usuario.delete()
+        return Response('Usuário Deletado com Sucesso')
